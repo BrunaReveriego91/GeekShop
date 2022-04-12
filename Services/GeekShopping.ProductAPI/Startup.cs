@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Model.Models;
 
 namespace GeekShopping.ProductAPI
 {
@@ -26,6 +28,13 @@ namespace GeekShopping.ProductAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connection = Configuration["MySqlConnection:MySqlConnectionString"];
+
+            services.AddDbContext<MySQLContext>(options => options.
+            UseMySql(connection, 
+                    new MySqlServerVersion(
+                        new Version(1,0,0))));
+
             services.AddControllers();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -39,7 +48,7 @@ namespace GeekShopping.ProductAPI
         {
             app.UseRouting();
             app.UseEndpoints(x => x.MapControllers());
-            
+
             app.UseSwagger();
             app.UseSwaggerUI();
 
